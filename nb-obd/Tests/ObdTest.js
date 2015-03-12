@@ -1,22 +1,21 @@
 ﻿var assert = require('assert');
 var Obd = require('../Obd').Obd;
-var EventEmitter = require('events').EventEmitter;
-var SerialPort = require('serialport');
-//var test = require('test-suite');
 
 exports['tests'] = {
-    /*"ListSerialPorts": function(test) {
-        var serialPort = require("serialport");
-        serialPort.list(function(err, ports) {
-            ports.forEach(function(port) {
-                console.log(port.comName + '\t' + port.pnpId + '\t' + port.manufacturer);
-            });
-        });
-        test.done();
-    },*/
-    "ObdTest": function(test) {
-        var obd = new Obd('COM4', { baudrate: 115200 });
+    "ObdTest": function (test) {
+        test.expect(2);
+
+        //var obd = new Obd('COM4', { baudrate: 38400 });
+        var obd = new Obd('COM4', { baudrate: 38400 });
         obd.connect();
-        test.done();
+
+        obd.on('connected', function () {
+            console.log('It works!');
+            obd.disconnect();
+            test.ok(true, 'connected');
+            test.ok(obd.getSupportedCommands().length > 5, 'supported command count');
+        });
+
+        setTimeout(test.done, 10000);
     }
 };
